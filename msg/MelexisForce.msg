@@ -1,0 +1,13 @@
+Header header
+float64 Bx00 
+float64 Bz00 
+float64 Bx01 
+float64 Bz01 
+float64 Bx10 
+float64 Bz10 
+float64 Bx11 
+float64 Bz11 
+float64 Temperature
+float64 Fx 
+float64 Fy 
+float64 Fz 

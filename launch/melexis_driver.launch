@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!-- roslaunch melexis melexis_driver.launch experiment_name:="volunteer_1_1" -->
+
+
+
+<launch>
+
+	<arg name="port1"           	     default="/dev/ttyACM0" />
+	<arg name="port2"           	     default="/dev/ttyACM1" />
+<!-- Recording Sensor1-->
+
+	<node pkg="melexis"  type="melexis_driver.py"  name="melexis_driver1" output="screen" respawn="false"    launch-prefix=""  required="true">
+
+		<param name="port"                value="$(arg port1)"/>  
+	</node>
+
+
+
+<!-- Recording Sensor2-->
+
+	<node pkg="melexis"  type="melexis_driver.py"  name="melexis_driver2" output="screen" respawn="false"    launch-prefix=""  required="true">
+
+		<param name="port"                value="$(arg port2)"/>  
+	</node>
+
+
+</launch>
