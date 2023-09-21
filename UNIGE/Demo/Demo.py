@@ -9,14 +9,15 @@ import matplotlib.artist as art
 import matplotlib.cm as cm
 cwdpath = Path(os.getcwd())
 ParentPath = cwdpath.parent.absolute()
-LibraryPath = str(ParentPath)+"\\Library"
+
+LibraryPath = "/home/index1/index_ws/src/Melexis_Tactile_Sensor/UNIGE/Library"
 sys.path.append(LibraryPath)  
 
 import TactaxisForce
 
 ########################################################################
-port = 28 #enter the correct port number
-pathData = str(ParentPath)+"\\Data\\Calib.csv"
+port = '/dev/ttyACM0' #enter the correct port number
+pathData = "/home/index1/index_ws/src/Melexis_Tactile_Sensor/UNIGE/Data/Calib.csv"
 ########################################################################
 
 flag = True
@@ -24,7 +25,7 @@ data = []
 
 def live_update_demo(blit = False):
     global Sensor,Ftare
-    fig = plt.figure(figsize=(19,9),facecolor='whitesmoke')
+    fig = plt.figure(facecolor='whitesmoke')
     ax1 = fig.add_subplot(2,16, (12,16))
     ax2 = fig.add_subplot(2,16, (28,32),sharex=ax1)
     ax3 = fig.add_subplot(2,16, (1,26))
@@ -41,7 +42,8 @@ def live_update_demo(blit = False):
     ax1.tick_params(labelsize=12)
     ax1.set_xticks([])
     #.set_yticks(np.arange(-0.5,15,0.5))
-    ax1.set_ylim([-8, 0.3])
+    # ax1.set_ylim([-8, 0.3])
+    ax1.set_ylim([-0.3, 8])
     ax1.grid()
     
     line2, = ax2.plot([],lw=3,ls="--",marker="o",markersize=10,color = "blue",animated = False,label="Fx")
@@ -91,7 +93,7 @@ def live_update_demo(blit = False):
         B,F = Sensor.getForce(dual=True)
         F -=Ftare
         Fr = np.sqrt(np.power(F[0],2)+np.power(F[1],2))
-        Y.append(F[2])
+        Y.append(-F[2])
         Y1.append(F[0])
         Y2.append(-F[1])
         arrowz.remove()
@@ -102,7 +104,7 @@ def live_update_demo(blit = False):
         else :
             arrow1 = Arrow(0,0,F[0]/(Fr),-F[1]/(Fr),width = 0.5,color=plt.cm.YlOrRd(Fr/1.2))
 
-        
+        print(F[1])
         
         line1.set_xdata(X)
         line1.set_ydata(Y)
