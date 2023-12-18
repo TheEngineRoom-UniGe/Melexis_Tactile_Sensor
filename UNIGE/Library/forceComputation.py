@@ -22,14 +22,14 @@ class forceComputation():
     The initialization of the class consists in loading or generating the ML model and can take a few seconds.
     """
     
-    def __init__(self,pathDataset=None):
+    def __init__(self,pathDataset=None,sfi=True):
         """
         Initialize the force computation algorithm. Use a dataset in argument
         """
         
         #Hardcode Parameters
         self.deg = 2
-        self.SFI = True
+        self.SFI = sfi
         self.score = []
             
 

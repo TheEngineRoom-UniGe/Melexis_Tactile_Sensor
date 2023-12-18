@@ -1,20 +1,23 @@
+#!/usr/bin/env python
 import sys
 import os
 from pathlib import Path
+import rospy
+from melexis_v2.msg import MelexisForce
 
-cwdpath = Path(os.getcwd())
-print("Current working directory: {0}".format(cwdpath))
+cwdpath = Path(os.path.dirname(os.path.realpath(__file__)))
+# print("Current working directory: {0}".format(cwdpath))
 ParentPath = cwdpath.parent.absolute()
-LibraryPath = str(ParentPath)+"/Library"
-print("Library path: {0}".format(LibraryPath))
+LibraryPath = str(ParentPath)+"/UNIGE/Library"
+# print("Library path: {0}".format(LibraryPath))
 sys.path.append(LibraryPath)
-RessourcesPath = str(ParentPath)+"/Ressources"
+RessourcesPath = str(ParentPath)+"/UNIGE/Ressources"
 sys.path.append(RessourcesPath)
 sys.path.append(cwdpath)
  
 ########################################################################
 port = '/dev/ttyACM0' #enter the correct port number
-pathData = str(ParentPath)+"/Data/Calib.csv"
+pathData = str(ParentPath)+"/UNIGE/Data/Calib.csv"
 ack=True  #True: Falt free instantiation (to do if you just plugged MelexIO) / False: Fast instantiation
 sfi=True  #True: Stray field rejection / False: Sensitive to stray field
 ########################################################################
@@ -109,7 +112,7 @@ def live_update_demo():
 
     ax1.set_facecolor("#00354B")
     ax1.tick_params(labelsize=12,color= "#ffffff",labelcolor="#ffffff")
-    ax1.set_xticks([])
+    # ax1.set_xticks([])
     ax1.set_ylim([-6.5, 0.3])
     ax1.grid(color= "#3e4242",linewidth=4)
     ax1.set_ylabel("Fnormal [N]",fontsize=15,fontweight = "bold",color = "#FFFFFF")
@@ -130,7 +133,7 @@ def live_update_demo():
     ax2.spines['top'].set_color('#b2c4cb')
     ax2.spines['left'].set_color('#b2c4cb')
     ax2.spines['right'].set_color('#b2c4cb')
-    ax2.set_xticks([])
+    # ax2.set_xticks([])
     ax2.set_ylim([-1.3, 1.3])
     ax2.grid(color= "#3e4242",linewidth=4)
     ax2.yaxis.label.set_color('#ffffff')
@@ -166,6 +169,11 @@ def live_update_demo():
 
     t_start = time.time()
     i=0
+
+    
+    pub = rospy.Publisher('/melexis_force', MelexisForce, queue_size=10)
+
+
     while True:
         tlim=100
         X.append(time.time()-t_start)
@@ -212,9 +220,32 @@ def live_update_demo():
             Y1 = Y1[-200:]
             Y2 = Y2[-200:]
 
+        msg = MelexisForce()
+        msg.header.stamp = rospy.Time.now()
+        msg.Fz = F[2]
+        msg.Fx = F[0]
+        msg.Fy = F[1]
+        msg.Bx00 = B[0]
+        msg.Bz00 = B[1]
+        msg.Bx01 = B[2]
+        msg.Bz01 = B[3]
+        msg.Bx10 = B[4]
+        msg.Bz10 = B[5]
+        msg.Bx11 = B[6]
+        msg.Bz11 = B[7]
+        msg.Temperature = B[8]
+
+        pub.publish(msg)
+
 
 if __name__ == '__main__':
-    print("Enabling connection to the board")
+    rospy.init_node('melexis_ros_visualizer', anonymous=True)
+    node_name = rospy.get_name()
+    port = rospy.get_param('~port')
+
+    print(f'[{node_name}] ==> ', 'Trying to open port:', port)
+    print(f'[{node_name}] ==> ', "Enabling connection to the board")
+    
     with TactaxisForce.TactaxisForce(str(port),pathDataset=pathData,sfi=sfi,ack=ack) as Sensor:
         Ftare = np.zeros(3)
         Ftareav = np.zeros((10,3))
@@ -222,5 +253,5 @@ if __name__ == '__main__':
             Bnew,Fnew = Sensor.getForce(dual=True)
             Ftareav[k]=Fnew
         Ftare = np.mean(Ftareav,axis=0)
-        print("Connection established")
+        print(f'[{node_name}] ==> ', "Connection established")
         live_update_demo()

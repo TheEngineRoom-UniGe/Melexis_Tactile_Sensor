@@ -17,14 +17,14 @@ sys.path.append(LibraryPath)
 import Tactaxis
 
 ########################################################################
-port = 27 #enter the correct port number
+port = 10 #enter the correct port number
 ########################################################################
 
 print("Enabling connection to the board")
 with Tactaxis.Tactaxis('COM'+str(port)) as Sensor: 
     pathToPattern =LibraryPath+'\\TactAxis_Seq_App.txt'
     Pat = Sensor.formatPattern(pathToPattern)
-    dataReadout = Sensor.loadPattern(Pat,ack=False)  #set ack to True if there are some connectivity issue (might take more time)
+    dataReadout = Sensor.loadPattern(Pat,ack=True)  #set ack to True if there are some connectivity issue (might take more time)
     time.sleep(1)
     Sensor.flushInput()
     Sensor.flushOutput()

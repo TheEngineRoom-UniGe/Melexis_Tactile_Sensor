@@ -29,4 +29,16 @@ print("Install scikit-learn")
 subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'scikit-learn'])
 print("done")
 
+print("Install matplotlib")
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'matplotlib'])
+print("done")
+
+print("Install screeninfo")
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'screeninfo'])
+print("done")
+
+print("Install pathlib")
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'pathlib'])
+print("done")
+
 print("All librairies successfully installed")

@@ -268,12 +268,12 @@ class Tactaxis(Melexio_Base.MelexIO):
         return out
 
 if __name__ == '__main__':                                                                                                                            
-    with Tactaxis('COM7',activeDUT=[8,9]) as Sensor:
+    with Tactaxis('COM56',activeDUT=[8,9]) as Sensor:
         cwd = os.getcwd()
         pathToPattern =cwd+'\\TactAxis_Seq_App.txt'
         Pat = Sensor.formatPattern(pathToPattern)
         dataReadout = Sensor.loadPattern(Pat,ack=False)  #set ack to True if there are some connectivity issue (might take more time)
         Sensor.flushInput()
         Sensor.flushOutput()
-        Values = Sensor.getValuesMultiChip(av=1,NoErr = True,repMax=10)
+        Values = Sensor.getValuesSingleChip(av=1,NoErr = True,repMax=10)
         print(Values)
